@@ -8,7 +8,7 @@ from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-def generator(samples, imgs_path, batch_size=256):
+def generator(samples, batch_size=256):
     num_samples = len(samples)
     while True:
         samples = shuffle(samples)
@@ -18,8 +18,7 @@ def generator(samples, imgs_path, batch_size=256):
             images = []
             angles = []
             for batch_sample in batch_samples:
-                filename = os.path.basename(batch_sample[0])
-                center_path = os.path.join(imgs_path, filename)
+                center_path = batch_sample[0]
                 center_image = cv2.imread(center_path)
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
@@ -29,11 +28,13 @@ def generator(samples, imgs_path, batch_size=256):
             y_train = np.array(angles)
             yield shuffle(X_train, y_train)
 
-def parse_csv(csv_file):
+def parse_csv(csv_file, imgs_path):
     lines = []
     with open(csv_file) as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
+            new_path = os.path.join(imgs_path, os.path.basename(line[0]))
+            line[0] = new_path
             lines.append(line)
 
     return lines
@@ -57,19 +58,23 @@ def main():
     parser.add_argument(
         'path',
         type=str,
-        help='Path that contains IMG/ and driving_log.csv'
+        help='Path that contains IMG/ and driving_log.csv',
+        nargs='+'
     )
 
     args = parser.parse_args()
 
-    log_path  = os.path.join(args.path, 'driving_log.csv')
-    imgs_path = os.path.join(args.path, 'IMG')
+    samples = []
+    for path in args.path:
+        log_path  = os.path.join(path, 'driving_log.csv')
+        imgs_path = os.path.join(path, 'IMG')
 
-    samples = parse_csv(log_path)
+        samples += parse_csv(log_path, imgs_path)
+
     train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
-    train_generator = generator(train_samples, imgs_path)
-    validation_generator = generator(validation_samples, imgs_path)
+    train_generator = generator(train_samples)
+    validation_generator = generator(validation_samples)
 
     model = define_model(input_shape=(160,320,3))
 
