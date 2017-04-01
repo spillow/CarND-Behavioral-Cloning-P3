@@ -5,34 +5,52 @@ import cv2
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D
+from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 
-def parse_csv(csv_file, img_path):
+def generator(samples, imgs_path, batch_size=256):
+    num_samples = len(samples)
+    while True:
+        samples = shuffle(samples)
+        for offset in range(0, num_samples, batch_size):
+            batch_samples = samples[offset:offset+batch_size]
+
+            images = []
+            angles = []
+            for batch_sample in batch_samples:
+                filename = os.path.basename(batch_sample[0])
+                center_path = os.path.join(imgs_path, filename)
+                center_image = cv2.imread(center_path)
+                center_angle = float(batch_sample[3])
+                images.append(center_image)
+                angles.append(center_angle)
+
+            X_train = np.array(images)
+            y_train = np.array(angles)
+            yield shuffle(X_train, y_train)
+
+def parse_csv(csv_file):
     lines = []
     with open(csv_file) as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             lines.append(line)
 
-    images = []
-    measurements = []
-    for line in lines:
-        try:
-            measurement = float(line[3])
-            measurements.append(measurement)
-        except ValueError:
-            print("***Couldn't parse line, skipping***")
-            continue
+    return lines
 
-        center_path = line[0]
-        filename = os.path.basename(center_path)
-        curr_path = os.path.join(img_path, filename)
-        image = cv2.imread(curr_path)
-        images.append(image)
+def define_model(input_shape):
+    model = Sequential()
+    model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=input_shape))
+    model.add(Convolution2D(6,5,5,activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Convolution2D(6,5,5,activation='relu'))
+    model.add(MaxPooling2D())
+    model.add(Flatten())
+    model.add(Dense(120))
+    model.add(Dense(84))
+    model.add(Dense(1))
 
-    X_train = np.array(images)
-    y_train = np.array(measurements)
-
-    return (X_train, y_train)
+    return model
 
 def main():
     parser = argparse.ArgumentParser(description='Record Path')
@@ -44,23 +62,24 @@ def main():
 
     args = parser.parse_args()
 
-    print(os.path.join(args.path, 'IMG'))
-    (X_train, y_train) = parse_csv(os.path.join(args.path, 'driving_log.csv'),
-                                   os.path.join(args.path, 'IMG'))
+    log_path  = os.path.join(args.path, 'driving_log.csv')
+    imgs_path = os.path.join(args.path, 'IMG')
 
-    model = Sequential()
-    model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160,320,3)))
-    model.add(Convolution2D(6,5,5,activation='relu'))
-    model.add(MaxPooling2D())
-    model.add(Convolution2D(6,5,5,activation='relu'))
-    model.add(MaxPooling2D())
-    model.add(Flatten())
-    model.add(Dense(120))
-    model.add(Dense(84))
-    model.add(Dense(1))
+    samples = parse_csv(log_path)
+    train_samples, validation_samples = train_test_split(samples, test_size=0.2)
+
+    train_generator = generator(train_samples, imgs_path)
+    validation_generator = generator(validation_samples, imgs_path)
+
+    model = define_model(input_shape=(160,320,3))
 
     model.compile(loss='mse', optimizer='adam')
-    model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=2)
+    model.fit_generator(
+        train_generator,
+        samples_per_epoch=len(train_samples),
+        validation_data=validation_generator,
+        nb_val_samples=len(validation_samples),
+        nb_epoch=5)
 
     model.save('model.h5')
 
