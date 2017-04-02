@@ -7,6 +7,7 @@ from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
+from keras.preprocessing.image import img_to_array, load_img
 
 def generator(samples, batch_size=256):
     num_samples = len(samples)
@@ -19,7 +20,8 @@ def generator(samples, batch_size=256):
             angles = []
             for batch_sample in batch_samples:
                 center_path = batch_sample[0]
-                center_image = cv2.imread(center_path)
+                center_image = load_img(center_path)
+                center_image = img_to_array(center_image)
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
                 angles.append(center_angle)
