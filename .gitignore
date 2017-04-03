@@ -1,6 +1,8 @@
 sample_training_data/
 records/
 windows_sim/
+video/
+advanced/
 *.zip
 *.swp
 *.log

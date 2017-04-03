@@ -44,6 +44,7 @@ def parse_csv(csv_file, imgs_path):
 def define_model(input_shape):
     model = Sequential()
     model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=input_shape))
+    model.add(Convolution2D(3,1,1))
     model.add(Convolution2D(6,5,5,activation='relu'))
     model.add(MaxPooling2D())
     model.add(Convolution2D(20,5,5,activation='relu'))
