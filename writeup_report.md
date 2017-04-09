@@ -25,6 +25,8 @@ The project includes the following files:
 * [model.py](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/model.py) containing the script to create and train the model
 * [drive.py](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/drive.py) for driving the car in autonomous mode
 * model.h5 containing a trained convolutional/fully connected neural network
+* [video.mp4](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/video.mp4) which shows the car driving around track 1.
+* [advanced.mp4](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/advanced.mp4) A partial drive around the more hilly track
 * writeup_report.md
 
 ***2. Submission includes functional code***
