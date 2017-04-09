@@ -3,6 +3,7 @@ records/
 windows_sim/
 video/
 advanced/
+.venv/
 *.zip
 *.swp
 *.log

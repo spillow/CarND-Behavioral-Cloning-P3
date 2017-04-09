@@ -119,10 +119,8 @@ def main():
 
     if args.visualize:
         # must have pydot_ng and graphviz installed for this to work.
-        # Current generated graph lacks information but hopefully this
-        # will be useful in the future.
         from keras.utils.visualize_util import plot
-        plot(model, to_file='model.png')
+        plot(model, to_file='model.png', show_shapes=True)
 
 if __name__ == '__main__':
     main()
