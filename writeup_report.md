@@ -88,8 +88,8 @@ with some tweaking of the size and number of fully connected layers to arrive at
 The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track. For example, the early models had difficulty in sections where there was dirt alongside the road
 instead of lines or the striped patches.  Considering the network architecture was strong enough to drive the rest of the track,
 the issue seemed to be with insufficient training data in those sections.  To improve the driving behavior in these cases,
-These sections of road were driven to and "record" was alternately turned off and on while approaching from different angles
-and from more centerd or off the edge of the road.
+these sections of road were driven to and "record" was alternately turned off and on while approaching from different angles
+and from more centered or off the edge of the road.
 
 At the end of the process, the vehicle learned how to deal with those difficult patches and is able to drive autonomously around the track without leaving the road.
 
@@ -155,7 +155,7 @@ After the collection process, the dataset size was 18510 images. The data was pr
 
 The data was randomly shuffled and 20% went into the validation set.
 
-This data was used for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 5 as evidenced by the fact that it roughly bottomed out at that point. The adam optimizer was used so that manually training the learning rate wasn't necessary.
+This data was used for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 5 as evidenced by the fact that the MSE loss roughly bottomed out at that point. The adam optimizer was used so that manually training the learning rate wasn't necessary.
 
 To train the model, any number of directories from different recording runs can be used.  For example:
 
