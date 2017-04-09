@@ -24,13 +24,13 @@ The goals / steps of this project are the following:
 ---
 
 The project includes the following files:
-* model.py containing the script to create and train the model
-* drive.py for driving the car in autonomous mode
+* [model.py](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/model.py) containing the script to create and train the model
+* [drive.py](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/drive.py) for driving the car in autonomous mode
 * model.h5 containing a trained convolutional/fully connected neural network
 * writeup_report.md
 
 ***2. Submission includes functional code***
-Using the Udacity provided simulator and the [drive.py](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/drive.py) file, the car can be driven autonomously around the track by executing
+Using the Udacity provided simulator and the drive.py file, the car can be driven autonomously around the track by executing
 ```sh
 python drive.py model.h5
 ```
@@ -95,7 +95,37 @@ At the end of the process, the vehicle learned how to deal with those difficult 
 
 ***2. Final Model Architecture***
 
-The final model architecture (model.py lines 46-69) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 46-69) consists of a convolution neural network with the following layers and layer sizes:
+
+| Layer         		    |     Description	        					            |
+|:---------------------:|:---------------------------------------------:|
+| Input         		    | 320x16x3 RGB image   							            |
+| Lambda                | Image normalization  							            |
+| Convolution 1x1x3   	| 1x1 stride, valid padding, outputs 320x160x3  |
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 316x156x6 	|
+| RELU					        |												                        |
+| Max Pooling           |	2x2 stride,	valid padding, outputs 158x78x6   |
+| Convolution 5x5    	  | 1x1 stride, valid padding, outputs 154x74x20 	|
+| RELU					        |												                        |
+| Max Pooling           |	2x2 stride,	valid padding, outputs 77x37x20   |
+| Convolution 5x5    	  | 1x1 stride, valid padding, outputs 73x33x40 	|
+| RELU					        |												                        |
+| Max Pooling           |	2x2 stride,	valid padding, outputs 36x16x40   |
+| Convolution 5x5    	  | 1x1 stride, valid padding, outputs 32x12x80	  |
+| RELU					        |												                        |
+| Max Pooling           |	2x2 stride,	valid padding, outputs 16x6x80    |
+| Flatten               |	outputs 7680					                        |
+| Fully connected		    | outputs 120                                   |
+| RELU					        |												                        |
+| Fully connected		    | outputs 84                                    |
+| RELU					        |												                        |
+| Fully connected		    | outputs 40                                    |
+| RELU					        |												                        |
+| Fully connected		    | outputs 20                                    |
+| RELU					        |												                        |
+| Fully connected		    | outputs 10                                    |
+| RELU					        |												                        |
+| Fully connected		    | outputs 1                                     |
 
 Here is a visualization of the architecture (minus the color space converter):
 
