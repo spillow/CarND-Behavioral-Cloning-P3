@@ -30,7 +30,7 @@ The project includes the following files:
 * writeup_report.md
 
 ***2. Submission includes functional code***
-Using the Udacity provided simulator and the drive.py file, the car can be driven autonomously around the track by executing
+Using the Udacity provided simulator and the [drive.py](https://github.com/spillow/CarND-Behavioral-Cloning-P3/blob/master/drive.py) file, the car can be driven autonomously around the track by executing
 ```sh
 python drive.py model.h5
 ```
@@ -97,7 +97,7 @@ At the end of the process, the vehicle learned how to deal with those difficult 
 
 The final model architecture (model.py lines 46-69) consisted of a convolution neural network with the following layers and layer sizes ...
 
-Here is a visualization of the architecture:
+Here is a visualization of the architecture (minus the color space converter):
 
 ![alt text][image1]
 
